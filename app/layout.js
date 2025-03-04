@@ -36,7 +36,9 @@ export default function RootLayout({ children }) {
     <html lang="en" className={jost.className}  suppressHydrationWarning={true}>
 
       <head>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" />
         <link href="/assets/css/app.css" rel="stylesheet" />
+        
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet" />
       </head>
 
@@ -58,7 +60,9 @@ export default function RootLayout({ children }) {
           </div>
         </div>
 
+        <Script src="https://code.jquery.com/jquery-3.6.0.min.js" strategy="beforeInteractive" /> 
         <Script src="/assets/js/app.js" strategy="beforeInteractive" /> 
+        
       </body>
     </html>
   );

@@ -1,5 +1,5 @@
 'use client';
-import LoginRegistrationComponent from '@/app/components/Auth/LoginRegistrationComponent';
+import LoginComponent from '@/app/components/Auth/LoginComponent';
 
 export default function Login() {
     const handleOnLogin = (status) => {
@@ -10,7 +10,7 @@ export default function Login() {
         <main className="main__content_wrapper">
             <section className="auth-page-area">
                 <div className="container">
-                    <LoginRegistrationComponent />
+                    <LoginComponent handleOnLogin={handleOnLogin} />
                 </div>
             </section>
         </main>

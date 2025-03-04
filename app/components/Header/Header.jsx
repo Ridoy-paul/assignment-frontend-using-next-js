@@ -1,19 +1,51 @@
+'use client';
 import Link from "next/link";
+import { useState } from 'react';
+import Button from 'react-bootstrap/Button';
+import Modal from 'react-bootstrap/Modal';
+import RegisterComponent from "../Auth/RegisterComponent";
+import LoginComponent from "../Auth/LoginComponent";
 
 export default function Header() {
+    const [stackUrls, setStackUrls] = useState([]);
+    const [loginModalShow, setLoginModalShow] = useState(false);
+    const [regModalShow, setRegModalShow] = useState(false);
+    
+    const handleLoginModalShow = () => {
+        setStackUrls((prevStack) => [...prevStack, window.location.pathname]);
+        window.history.pushState({}, '', '/login');
+        setLoginModalShow(true);
+    };
+
+    const handleRegModalShow = () => {
+        setStackUrls((prevStack) => [...prevStack, window.location.pathname]);
+        window.history.pushState({}, '', '/register');
+        setRegModalShow(true);
+    };
+
+    const handleClose = (type = 'login') => {
+        const previousUrl = stackUrls[stackUrls.length - 1] || '/';
+        window.history.replaceState({}, '', previousUrl);
+        type === 'login' ? setLoginModalShow(false) : setRegModalShow(false);
+        setStackUrls((prevStack) => prevStack.slice(0, -1));
+    };
+
+    
+
     return (
+        <>
         <nav className="navbar navbar-expand navbar-light navbar-bg">
-            {/* <a className="sidebar-toggle js-sidebar-toggle">
-                <i className="hamburger align-self-center" />
-            </a> */}
             <div className="navbar-collapse collapse">
                 <ul className="navbar-nav navbar-align">
-                    
-                    <li class="nav-item mx-2">
-                        <Link class="nav-link border rounded px-2" href="/login">Login</Link>
+                    <li className="nav-item mx-2">
+                        <Button className="nav-link border rounded px-2 mb-0 btn-outline-success" onClick={handleLoginModalShow}>
+                            Login
+                        </Button>
                     </li>
-                    <li class="nav-item">
-                        <Link class="nav-link border rounded px-2" href="/register">Register</Link>
+                    <li className="nav-item">
+                        <Button className="nav-link border rounded px-2 mb-0" onClick={handleRegModalShow} >
+                            Register
+                        </Button>
                     </li>
 
                     <li className="nav-item dropdown">
@@ -45,6 +77,38 @@ export default function Header() {
                 </ul>
             </div>
         </nav>
+
+        {/* Login Modal  */}
+        <Modal
+            show={loginModalShow}
+            onHide={ () => handleClose('login')}
+            backdrop="static"
+            keyboard={false}
+        >
+            <Modal.Header closeButton>
+                <Modal.Title>Login</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+                <LoginComponent />
+            </Modal.Body>
+        </Modal>
+
+        {/* Registration Modal  */}
+        <Modal
+            show={regModalShow}
+            onHide={() => handleClose('reg')}
+            backdrop="static"
+            keyboard={false}
+        >
+            <Modal.Header closeButton>
+                <Modal.Title>Registration</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+                <RegisterComponent />
+            </Modal.Body>
+        </Modal>
+
+        
+        </>
     );
-  }
-  
+}

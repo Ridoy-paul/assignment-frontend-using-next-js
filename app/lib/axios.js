@@ -1,6 +1,6 @@
 import Axios from 'axios'
 
-const axios = Axios.create({
+const axiosInstance  = Axios.create({
     baseURL: process.env.NEXT_PUBLIC_BACKEND_URL,
     headers: {
         'X-Requested-With': 'XMLHttpRequest',
@@ -11,7 +11,7 @@ const axios = Axios.create({
 
 // Set the Bearer auth token.
 const setBearerToken = token => {
-    axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
+    axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${token}`
 }
 
-export { axios, setBearerToken }
+export { axiosInstance, setBearerToken }

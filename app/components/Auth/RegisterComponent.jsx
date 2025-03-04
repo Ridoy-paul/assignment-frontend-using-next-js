@@ -5,237 +5,59 @@ import { toast } from 'react-toastify';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import UserData from '@/app/lib/data/utility/UserData';
-import { setBearerToken } from '@/app/lib/axios';
+import { axiosInstance, setBearerToken } from '@/app/lib/axios';
 import { AuthenticationSystem } from '@/hooks/Authentication';
+import GoogleAuth from './GoogleAuth';
 
 const RegisterComponent = ({ onRegister, isShowOtherInfo = true }) => {
     const { csrf, mutate } = AuthenticationSystem();
     const networkCaller = new NetworkCaller();
 
-    // States
-    const [formData, setFormData] = useState({ name: '', phone: '', otp: '', password: '' });
-    const [step, setStep] = useState('phoneInput'); // 'phoneInput' | 'otpInput' | 'formInputs'
-    const [loading, setLoading] = useState({ phone: false, otp: false, register: false });
-    const [timer, setTimer] = useState(180);
-    const [otpSent, setOtpSent] = useState(false);
-
-    // Update state based on input changes
-    const handleChange = (e) => {
-        const { id, value } = e.target;
-        setFormData((prev) => ({ ...prev, [id]: value }));
-    };
-
-    // Timer logic
-    const startTimer = () => {
-        setTimer(180);
-        const interval = setInterval(() => {
-        setTimer((prev) => {
-            if (prev <= 1) {
-            clearInterval(interval);
-            return 0;
-            }
-            return prev - 1;
-        });
-        }, 1000);
-    };
-
-    const formatTimer = (seconds) => {
-        const minutes = Math.floor(seconds / 60);
-        return `${minutes}:${seconds % 60 < 10 ? '0' : ''}${seconds % 60}`;
-    };
-
-    // API Call Handlers
-    const handleApiCall = async (url, data, onSuccess, onFailure, key) => {
-        setLoading((prev) => ({ ...prev, [key]: true }));
-        const response = await networkCaller.postRequest(url, data);
-        if (response?.isSuccess) {
-        onSuccess(response);
-        } else {
-        toast.error(response?.errorMessage || 'Something went wrong!');
-        onFailure?.();
-        }
-        setLoading((prev) => ({ ...prev, [key]: false }));
-    };
-
-    const handlePhoneSubmit = (e) => {
-        e.preventDefault();
-        const formDataN = new FormData();
-        formDataN.append('phone', formData.phone);
-
-        handleApiCall(
-        Urls.authRegGetOTP(),
-        formDataN,
-        () => {
-            setStep('otpInput');
-            setOtpSent(true);
-            startTimer();
-            toast.success('An OTP has been sent to your phone.');
-        },
-        null,
-        'phone'
-        );
-    };
-
-    const handleOtpSubmit = (e) => {
-        e.preventDefault();
-        const formDataN = new FormData();
-        formDataN.append('phone', formData.phone);
-        formDataN.append('otp', formData.otp);
-
-        handleApiCall(
-        Urls.authVerifyOTP(),
-        formDataN,
-        () => {
-            setStep('formInputs');
-            toast.success('OTP verified!');
-        },
-        null,
-        'otp'
-        );
-    };
-
-    const handleFinalSubmit = (e) => {
-        e.preventDefault();
-        const formDataN = new FormData();
-        Object.keys(formData).forEach((key) => formDataN.append(key, formData[key]));
-
-        handleApiCall(
-        Urls.authRegister(),
-        formDataN,
-        async (response) => {
-            mutate();
-            const { _token, ...userData } = response.responseData;
-            await UserData.storeToken(_token);
-            await UserData.storeUserData(userData);
-            setBearerToken(_token);
-
-            toast.success('Registration successful!');
-            if(userData['is_mess_system_active'] == true || userData['is_mess_system_active'] == 1) {
-                //window.location.href = '/user/mess-system/my-mess-list';
-                onRegister(false); // here false is go to mess dashboard
-            } else {
-                onRegister(true);
-                //window.location.href = '/user/dashboard';
-            }
-        },
-        null,
-        'register'
-        );
-    };
-
-    const handleResendOtp = () => {
-        setOtpSent(false);
-        setTimer(0);
-        handlePhoneSubmit(new Event('submit'));
-    };
-
-    // Render Form Sections
-    const renderPhoneInput = () => (
-        <form className="auth-card-form" onSubmit={handlePhoneSubmit}>
-            <div className="form-group">
-                <input
-                    name="phone"
-                    placeholder="Ex. 0172643xxxx"
-                    required
-                    type="number"
-                    id="phone"
-                    className="form-control ps-3"
-                    value={formData.phone}
-                    onChange={handleChange}
-                />
-            </div>
-            <button type="submit" className="auth-card-form-btn primary__btn" disabled={loading.phone}>
-                {loading.phone ? <Spinner /> : 'Send OTP'}
-            </button>
-        </form>
-    );
-
-    const renderOtpInput = () => (
-        <form className="auth-card-form" onSubmit={handleOtpSubmit}>
-            <div className="form-group">
-                <input
-                    name="otp"
-                    placeholder="Enter OTP"
-                    required
-                    type="number"
-                    id="otp"
-                    className="form-control"
-                    value={formData.otp}
-                    onChange={handleChange}
-                />
-            </div>
-            <button type="submit" className="auth-card-form-btn primary__btn" disabled={loading.otp}>
-                {loading.otp ? <Spinner /> : 'Verify OTP'}
-            </button>
-            {otpSent && (
-                <div className="mt-3">
-                    <span>{timer > 0 ? `OTP expires in ${formatTimer(timer)}` : 'Resend OTP'}</span>
-                    <button type="button" className="btn btn-link text-danger" disabled={timer > 0} onClick={handleResendOtp}>
-                        Resend OTP
-                    </button>
-                </div>
-            )}
-        </form>
-    );
-
-    const renderFormInputs = () => (
-        <form className="auth-card-form" onSubmit={handleFinalSubmit}>
-            <div className="form-group">
-                <input
-                    name="name"
-                    placeholder="Full name"
-                    required
-                    type="text"
-                    id="name"
-                    className="form-control"
-                    value={formData.name}
-                    onChange={handleChange}
-                />
-            </div>
-            <div className="form-group">
-                <input
-                    name="password"
-                    placeholder="Password"
-                    required
-                    type="password"
-                    id="password"
-                    className="form-control"
-                    value={formData.password}
-                    onChange={handleChange}
-                />
-            </div>
-            <button type="submit" className="auth-card-form-btn primary__btn" disabled={loading.register}>
-                {loading.register ? <Spinner /> : 'Register Account'}
-            </button>
-        </form>
-    );
-    
-
     return (
-        <div className="auth-card">
-            <div className="auth-card-head">
-                <Image
-                    className="rounded-pill"
-                    src="/assets/img/register.gif"
-                    alt="Register Icon"
-                    width={100}
-                    height={100}
-                    loading="lazy"
-                />
-                <h4 className="auth-card-title">Register</h4>
-            </div>
-            
-            <div className="auth-card-form-body">
-                {step === 'phoneInput' && renderPhoneInput()}
-                {step === 'otpInput' && renderOtpInput()}
-                {step === 'formInputs' && renderFormInputs()}
-                {isShowOtherInfo == true && (
-                    <div className="auth-card-bottom">
-                        <p className="auth-card-bottom-link">
-                            Already have an account? <Link href={routes.login}>Login</Link>
-                        </p>
+        <div className="align-middle">
+            <div className="card">
+                <div className="card-body">
+                <div className="m-sm-3">
+                    <form>
+                    <div className="mb-3">
+                        <label className="form-label">Full name<span className='text-danger'>*</span></label>
+                        <input
+                            className="form-control form-control-lg"
+                            type="text"
+                            name="name"
+                            placeholder="Enter your name"
+                        />
                     </div>
-                )}
+                    <div className="mb-3">
+                        <label className="form-label">Email<span className='text-danger'>*</span></label>
+                        <input
+                            className="form-control form-control-lg"
+                            type="email"
+                            name="email"
+                            placeholder="Enter your email"
+                        />
+                    </div>
+                    <div className="mb-3">
+                        <label className="form-label">Password<span className='text-danger'>*</span></label>
+                        <input
+                            className="form-control form-control-lg"
+                            type="password"
+                            name="password"
+                            placeholder="Enter password"
+                        />
+                    </div>
+                    <div className="d-grid gap-2 mt-3">
+                        <a href="index.html" className="btn btn-lg btn-primary">
+                            Sign up
+                        </a>
+                    </div>
+                    </form>
+                    
+                    <div className="mt-4">
+                        <GoogleAuth />
+                    </div>
+                </div>
+                </div>
             </div>
         </div>
     );
