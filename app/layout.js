@@ -43,7 +43,7 @@ export default function RootLayout({ children }) {
       </head>
 
       <body suppressHydrationWarning={true}>
-        <ToastContainer position="top-center" autoClose={2000} hideProgressBar={true} newestOnTop closeOnClick pauseOnFocusLoss draggable pauseOnHover />
+        <ToastContainer position="top-right" autoClose={2000} hideProgressBar={true} newestOnTop closeOnClick pauseOnFocusLoss draggable pauseOnHover />
 
         <div className="wrapper">
 
