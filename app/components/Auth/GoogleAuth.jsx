@@ -6,13 +6,30 @@ import { setBearerToken } from '@/app/lib/axios';
 import { UserData } from '@/app/components/Link';
 
 const GoogleAuth = () => {
-  const handleGoogleSuccess = async (credentialResponse) => {
-    const { code } = credentialResponse?.clientId;
 
-    console.log("Google Code: "+JSON.stringify(credentialResponse.clientId));
+  const handleGoogleSuccess = async (credentialResponse) => {
+    //const { code } = credentialResponse?.clientId;
+
+    //console.log("Google Code: "+JSON.stringify(credentialResponse.clientId));
+
+    if (credentialResponse.error) {
+        console.error('Google Login Error:', credentialResponse.error);
+        return;
+    }
+
+    const { tokenId } = credentialResponse.credential;
+
+    console.log("Google Token: "+JSON.stringify(credentialResponse));
 
     try {
-      const response = await axiosInstance.post('/auth/google', { code });
+      const { credential, clientId } = credentialResponse;
+      
+      const response = await axiosInstance.post('/auth/google/callback', JSON.stringify({
+        token: credential, // Google token sent to Laravel
+        client_id: clientId, // Optionally, send the client ID to ensure the token is from your app
+      }));
+
+      console.log(response);
 
         const responseData = response?.data;
             
@@ -29,13 +46,9 @@ const GoogleAuth = () => {
             toast.error(response.errorMessage);
         }
 
-
-      localStorage.setItem('access_token', res.data.access_token);
-      localStorage.setItem('refresh_token', res.data.refresh_token);
-
-
     } catch (error) {
-      console.error('Google authentication failed', error);
+        console.log(error);
+      console.error('Google authentication failed');
     }
   };
 
