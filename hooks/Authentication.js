@@ -1,6 +1,6 @@
 'use client';
 import useSWR from 'swr';
-import { axios } from '@/app/lib/axios';
+import { axiosInstance } from '@/app/lib/axios';
 import { useRouter } from 'next/navigation';
 
 export const AuthenticationSystem = ({ middleware, redirectIfAuthenticated } = {}) => {
@@ -10,19 +10,16 @@ export const AuthenticationSystem = ({ middleware, redirectIfAuthenticated } = {
         data: user,
         error,
         mutate,
-    } = useSWR('/api/user', () =>
-        axios
-            .get('/api/user')
+    } = useSWR('/user', () =>
+        axiosInstance
+            .get('/user')
             .then((res) => res.data)
             .catch((error) => {})
     );
-
-    const csrf = () => axios.get('/sanctum/csrf-cookie');
 
     return {
         user,
         error,
         mutate,
-        csrf,
     };
 };

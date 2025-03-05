@@ -6,8 +6,7 @@ import { useParams, useRouter } from 'next/navigation';
 import Cookies from 'js-cookie';
 
 export const useAuth = ({ middleware, redirectIfAuthenticated } = {}) => {
-    //Not Used
-    /*
+    
     const router = useRouter()
     const params = useParams()
 
@@ -15,9 +14,9 @@ export const useAuth = ({ middleware, redirectIfAuthenticated } = {}) => {
         data: user,
         error,
         mutate,
-    } = useSWR('/api/user', () =>
+    } = useSWR('/user', () =>
         axios
-            .get('/api/user')
+            .get('/user')
             .then(res => res.data)
             .catch(error => {
 
@@ -134,5 +133,5 @@ export const useAuth = ({ middleware, redirectIfAuthenticated } = {}) => {
         resendEmailVerification,
         logout,
     }
-    */
+    
 }

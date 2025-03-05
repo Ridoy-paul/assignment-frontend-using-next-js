@@ -1,19 +1,20 @@
 'use client';
 
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
 import { axiosInstance } from '@/app/lib/axios';
 import { toast } from 'react-toastify';
 import GoogleAuth from './GoogleAuth';
+import { AuthenticationSystem } from '@/hooks/Authentication';
+import { setBearerToken } from '@/app/lib/axios';
+import { UserData } from '@/app/components/Link';
 
-const RegisterComponent = ({ onRegister, isShowOtherInfo = true }) => {
+const RegisterComponent = () => {
+    const { csrf, mutate } = AuthenticationSystem();
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [loading, setLoading] = useState(false);
-
-    const router = useRouter();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -32,15 +33,23 @@ const RegisterComponent = ({ onRegister, isShowOtherInfo = true }) => {
                 password
             });
 
-            if (response.status === 201) {
+            const responseData = response?.data;
+            
+            if (responseData.isSuccess == true) {
+                mutate()
+                const { _token, userData } = responseData.responseData;
+                await UserData.storeToken(_token);
+                await UserData.storeUserData(userData);
+                setBearerToken(_token);
                 toast.success('Registration successful!');
-                //router.push('/login');  // Redirect to login page after successful registration
-            } else {
-                toast.error('Registration failed!');
+                window.location.href = '/user/dashboard';
+            } 
+            else {
+                toast.error(response.errorMessage);
             }
         } catch (error) {
-            //console.error('Error registering:', error);
-            toast.error('An error occurred during registration');
+            //console.error(error);
+            toast.error(error?.response?.data?.errorMessage || 'An error occurred during registration');
         } finally {
             setLoading(false);
         }
@@ -87,6 +96,7 @@ const RegisterComponent = ({ onRegister, isShowOtherInfo = true }) => {
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}
                                     placeholder="Enter password"
+                                    minLength={8}
                                     required
                                 />
                             </div>
@@ -100,6 +110,7 @@ const RegisterComponent = ({ onRegister, isShowOtherInfo = true }) => {
                                     value={confirmPassword}
                                     onChange={(e) => setConfirmPassword(e.target.value)}
                                     placeholder="Confirm your password"
+                                    minLength={8}
                                     required
                                 />
                             </div>
@@ -108,7 +119,7 @@ const RegisterComponent = ({ onRegister, isShowOtherInfo = true }) => {
                                 <button type="submit" className="btn btn-lg btn-primary" disabled={loading}>
                                     {loading ? (
                                         <span className="spinner-border spinner-border-sm" role="status">
-                                            <span className="sr-only">Loading...</span>
+                                            <span className="sr-only"></span>
                                         </span>
                                     ) : (
                                         "Sign Up"
