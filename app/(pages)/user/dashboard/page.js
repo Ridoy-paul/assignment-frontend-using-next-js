@@ -1,5 +1,8 @@
-"use client";
 import { Image, Link, routes } from '@/app/components/Link';
+
+export const metadata = {
+    title: "Dashboard",
+};
 
 export default function Dashboard() {
     return (

@@ -14,7 +14,7 @@ const jost = Jost({
 });
 
 export const metadata = {
-  title: "Assignments",
+  title: "Assignments using Next JS, Laravel",
   description: "",
   keywords: "",
   author: "Ridoy Paul",

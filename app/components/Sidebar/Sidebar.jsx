@@ -6,7 +6,7 @@ export default function Sidebar() {
         <nav id="sidebar" className="sidebar js-sidebar">
             <div className="sidebar-content js-simplebar">
             <Link className="sidebar-brand" href={routes.home}>
-                <span className="align-middle">AdminKit</span>
+                <span className="align-middle">Parkcity</span>
             </Link>
             <ul className="sidebar-nav">
                 <li className="sidebar-item">
@@ -22,15 +22,15 @@ export default function Sidebar() {
                     </Link>
                 </li>
                 <li className="sidebar-item">
-                    <Link className="sidebar-link" href={routes.user.add_hotel}>
+                    <Link className="sidebar-link" href={routes.user.add_property}>
                         <i className="align-middle" data-feather="user" />
-                        <span className="align-middle">Add Hotel</span>
+                        <span className="align-middle">Add New Property</span>
                     </Link>
                 </li>
                 <li className="sidebar-item">
-                    <Link className="sidebar-link" href={routes.user.all_hotel}>
+                    <Link className="sidebar-link" href={routes.user.all_properties}>
                         <i className="align-middle" data-feather="user" />
-                        <span className="align-middle">Hotel List</span>
+                        <span className="align-middle">All Properties</span>
                     </Link>
                 </li>
                 

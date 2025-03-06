@@ -5,8 +5,8 @@ const routes = {
     
     user: {
         dashboard: '/user/dashboard',
-        add_hotel: '/user/add-hotel',
-        all_hotel: '/user/all-hotel',
+        add_property: '/user/add-property',
+        all_properties: '/user/all-properties',
     },
 
 

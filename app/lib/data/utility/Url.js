@@ -14,6 +14,16 @@ const Urls = {
 
    
     authProfile: () => `${BASE_URL}/profile`,
+
+    saveProperty: () => `${BASE_URL}/save-property`,
+    getAllProperties: () => `${BASE_URL}/get-all-properties`,
+    deletePropertyUrl: () => `${BASE_URL}/delete-property`,
+    getPropertyItem: () => `${BASE_URL}/get-property-item`,
+    
+    
+    
+
+    
     
 
 };

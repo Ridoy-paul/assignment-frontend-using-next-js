@@ -17,7 +17,7 @@ class NetworkCaller {
 
   async getRequest(url) {
     try {
-      if (!this.token || !this.csrfToken) {
+      if (!this.token) {
         await this.initialize();
       }
 
@@ -46,10 +46,14 @@ class NetworkCaller {
 
   async postRequest(url, body = {}) {
     try {
+
+      if (!this.token) {
+        await this.initialize();
+      }
+
       const response = await axiosInstance.post(url, body, {
         headers: {
           'Accept': 'application/json',
-          // 'X-CSRF-TOKEN': csToken,
           'Authorization': `Bearer ${this.token}`,
         },
       });
@@ -71,14 +75,14 @@ class NetworkCaller {
 
   async handleRequestError(error) {
     
-    if(error.response.status == 401) {
+    if(error?.response?.status == 401) {
       await UserData.clearToken();
       await UserData.clearUserData();
       window.location.href = '/login';
     }
 
     // This is for validation error
-    if(error.response.status == 422) {
+    if(error?.response?.status == 422) {
       try {
           const errorMessages = JSON.parse(error.response.data.errorMessage);
           Object.values(errorMessages).forEach(messages => {
@@ -90,7 +94,7 @@ class NetworkCaller {
       return;
     }
     
-    toast.error(error.response.data.errorMessage || 'Network error! Please try again.');
+    toast.error(error?.response?.data?.errorMessage || 'Network error! Please try again.');
     /*
     if (error.response) {
       toast.error(error.response.data.message || 'Error occurred.');
