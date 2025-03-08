@@ -6,7 +6,7 @@ export default function Sidebar() {
         <nav id="sidebar" className="sidebar js-sidebar">
             <div className="sidebar-content js-simplebar">
             <Link className="sidebar-brand" href={routes.home}>
-                <span className="align-middle">Parkcity</span>
+                <span className="align-middle">Smart Hotel BD</span>
             </Link>
             <ul className="sidebar-nav">
                 <li className="sidebar-item">
