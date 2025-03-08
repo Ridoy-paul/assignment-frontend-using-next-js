@@ -13,7 +13,7 @@ const Urls = {
     authLogout: () => `${BASE_URL}/logout`,
 
    
-    authProfile: () => `${BASE_URL}/profile`,
+    getAuthProfile: () => `${BASE_URL}/get-auth-profile`,
 
     saveProperty: () => `${BASE_URL}/save-property`,
     getAllProperties: () => `${BASE_URL}/get-all-properties`,

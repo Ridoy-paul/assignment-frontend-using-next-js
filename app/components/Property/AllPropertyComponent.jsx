@@ -73,14 +73,14 @@ export default function AllPropertyComponent() {
                             </div>
                         ) : (
                             properties.map(p => (
-                                <div key={p.id} className="col-md-3 col-lg-3 col-12">
+                                <div key={p.id} className="col-md-4 col-lg-3 col-12">
                                     <div className="card shadow rounded border mb-4">
                                         <img
                                             src={p.image ? p.image : noImgLink}
                                             className="card-img-top"
                                             loading="lazy"
                                             alt={p.name}
-                                            style={{ maxHeight: '250px', objectFit: 'cover' }}
+                                            style={{ minHeight: '250px', maxHeight: '250px', objectFit: 'cover' }}
                                         />
                                         <div className="card-body">
                                             <div className="">

@@ -1,3 +1,5 @@
+import PropertyShareComponent from "@/app/components/Property/PropertyShareComponent";
+
 const getPropertyData = async (id) => {
 
     try {
@@ -70,6 +72,8 @@ export default async function PropertyDetails({ params }) {
                             </div>
                             <div className="card-text" style={{ textAlign: 'justify' }} dangerouslySetInnerHTML={{ __html: propertyItem?.descriptions }} />
                         </div>
+                        
+                        <PropertyShareComponent />
                     </div>
                 </div>
             </div>
