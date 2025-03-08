@@ -19,6 +19,8 @@ const Urls = {
     getAllProperties: () => `${BASE_URL}/get-all-properties`,
     deletePropertyUrl: () => `${BASE_URL}/delete-property`,
     getPropertyItem: () => `${BASE_URL}/get-property-item`,
+    getDashboardReport: () => `${BASE_URL}/get-dashboard-report`,
+    
     
     
     
