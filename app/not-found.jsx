@@ -1,20 +1,18 @@
-import Image from "next/image"
- 
+import Image from "next/image";
+
 export default function NotFound() {
   return (
-    <section className="auth-page-area py-5">
-        <div className="container">
-            <div className="row justify-content-center">
-                <div className="col-lg-6 col-xl-4 col-md-8 col-12">
-                    <div className="auth-card py-5 rounded">
-                        <div className="auth-card-form-body text-center">
-                            <Image src="/assets/img/not-found.svg" alt="#" className='my-5' width={150} height={100} loading="lazy" />
-                            <h3 className="auth-card-title">Page Not Found!</h3>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+    <section className="d-flex align-items-center justify-content-center min-vh-100 bg-light">
+      <div className="text-center p-5 bg-white shadow rounded-3 w-50 pt-2">
+        <h1 className="display-1 fw-bold text-danger">404</h1>
+        <h2 className="h3 text-dark mb-4">Page Not Found!</h2>
+        <p className="text-muted mb-4">
+          The page you are looking for doesn’t exist.
+        </p>
+        <a href="/" className="btn btn-primary px-4 py-2">
+          Go Home
+        </a>
+      </div>
     </section>
-  )
+  );
 }
